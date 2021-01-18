@@ -24,6 +24,7 @@
 #define OSL(n) (Key) {.raw = kaleidoscope::ranges::OSL_FIRST + n}
 
 namespace kaleidoscope {
+namespace plugin {
 
 class OneShot : public kaleidoscope::Plugin {
  public:
@@ -36,15 +37,39 @@ class OneShot : public kaleidoscope::Plugin {
   static bool isPressed() {
     return !!pressed_state_.all;
   }
+  static bool isSticky() {
+    return !!sticky_state_.all;
+  }
   static bool isActive(Key key);
   static bool isSticky(Key key);
-  static void cancel(bool with_stickies);
-  static void cancel(void) {
-    cancel(false);
-  }
+  static void cancel(bool with_stickies = false);
   static uint16_t time_out;
+  static uint32_t sticky_time_out;
   static int16_t double_tap_time_out;
   static uint16_t hold_time_out;
+
+  static inline void enableStickablity() {}
+  static void enableStickability(Key key);
+  template <typename... Keys>
+  static void enableStickability(Key key, Keys&&... keys) {
+    enableStickability(key);
+    enableStickability(keys...);
+  }
+  static void enableStickabilityForModifiers();
+  static void enableStickabilityForLayers();
+
+  static inline void disableStickability() {}
+  static void disableStickability(Key key);
+  template <typename... Keys>
+  static void disableStickability(Key key, Keys&&... keys) {
+    disableStickability(key);
+    disableStickability(keys...);
+  }
+  static void disableStickabilityForModifiers();
+  static void disableStickabilityForLayers();
+
+  static bool isStickable(Key key);
+
   static bool double_tap_sticky;
   static bool double_tap_sticky_layers;
 
@@ -67,12 +92,13 @@ class OneShot : public kaleidoscope::Plugin {
   static uint32_t start_time_;
   static state_t state_;
   static state_t sticky_state_;
+  static state_t stickable_state_;
   static state_t pressed_state_;
   static Key prev_key_;
   static bool should_cancel_;
   static bool should_cancel_stickies_;
-  static bool should_mask_on_interrupt_;
   static uint8_t positions_[16];
+  static bool use_new_stickies_;
 
   static void positionToCoords(uint8_t pos, byte *row, byte *col);
 
@@ -80,7 +106,7 @@ class OneShot : public kaleidoscope::Plugin {
   static void activateOneShot(uint8_t idx);
   static void cancelOneShot(uint8_t idx);
 };
-
+}
 }
 
-extern kaleidoscope::OneShot OneShot;
+extern kaleidoscope::plugin::OneShot OneShot;
