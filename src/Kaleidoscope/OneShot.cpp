@@ -18,6 +18,7 @@
 #include <Kaleidoscope-OneShot.h>
 
 namespace kaleidoscope {
+namespace plugin {
 
 // ---- state ---------
 
@@ -36,6 +37,7 @@ Key OneShot::prev_key_;
 bool OneShot::should_cancel_ = false;
 bool OneShot::should_cancel_stickies_ = false;
 uint8_t OneShot::positions_[16];
+bool OneShot::use_new_stickies_ = false;
 
 // --- helper macros ------
 
